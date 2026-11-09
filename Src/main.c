@@ -16,61 +16,25 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "max7219.h"
 #include "mma8451.h"
 #include "fluid_bridge.h"
 #include "stm32f7xx_hal.h"
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
 
 I2C_HandleTypeDef hi2c1;
-
 SPI_HandleTypeDef hspi1;
-
 UART_HandleTypeDef huart3;
 
-/* USER CODE BEGIN PV */
 MAX7219 matrix;
 
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART3_UART_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-
-/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
@@ -79,35 +43,13 @@ static void MX_USART3_UART_Init(void);
 int main(void)
 {
 
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
-  MX_USART3_UART_Init();
-  /* USER CODE BEGIN 2 */
 
   // Test pattern - screen init ok
   MAX7219_Init(&matrix, &hspi1, 2);
@@ -121,9 +63,8 @@ int main(void)
 
   MMA8451_Init(&hi2c1);
 
-  MAX7219_Clear(&matrix);
-
   // Test pattern - accelerometer i2c init ok
+  MAX7219_Clear(&matrix);
   MAX7219_SetPixel(&matrix,1, 1, true);
   MAX7219_SetPixel(&matrix,6, 6, true);
   MAX7219_SetPixel(&matrix,1, 6, true);
@@ -134,10 +75,6 @@ int main(void)
 
   Fluid_Init();
 
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   #define SIMULATION_STEP_MS 20 // 20 ms = 50fps (1 loop = 0,02s*50)
   #define SIMLUATION_STEP_FLOAT (SIMULATION_STEP_MS / 1000.0f)
 
@@ -155,7 +92,6 @@ int main(void)
     float gravityX = -acceleration.y / 4096.0f;
     float gravityY = -acceleration.x / 4096.0f;
 
-
     Fluid_Update(gravityX, gravityY, SIMLUATION_STEP_FLOAT);
 
     for (uint8_t y = 0; y < 8; y++) {
@@ -170,11 +106,7 @@ int main(void)
     }
 
     MAX7219_Update(&matrix);
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -384,12 +316,6 @@ static void MX_GPIO_Init(void)
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
- /* MPU Configuration */
 
 void MPU_Config(void)
 {
